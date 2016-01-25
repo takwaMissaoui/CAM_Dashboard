@@ -1,0 +1,100 @@
+{"order":{
+				"properties":{
+					"Amount":{
+						"properties":{
+							"afterTaxes":{"type":"double"},
+							"beforeTaxes":{"type":"double"}}},
+							"Delivery":{
+								"properties":{
+									"address":{
+										"properties":{
+											"city":{"type":"string"},
+											"country":{"type":"string"},
+											"line1":{"type":"string"},
+											"line2":{"type":"string"},
+											"line3":{"type":"string"},
+											"zipCode":{"type":"string"}}
+										},
+										"branchID":{"type":"string"},
+										"mode":{"type":"string"},
+										"preferredDate":{
+											"type":"date",
+											"format":"dateOptionalTime"}
+										}
+									},
+									"Events":{
+										"properties":{
+											"flowId":{"type":"string"},
+											"message":{"type":"string"},
+											"ts":{"type":"long"},
+											"type":{"type":"string"}
+										}
+									},
+									"Lines":{
+										"properties":{
+											"amount":{"type":"double"},
+											"code":{"type":"string"},
+											"expectedDeliveryDate":{
+												"type":"date",
+												"format":"dateOptionalTime"
+											},
+											"quantity":{"type":"long"},
+											"shippingMethod":{"type":"string"},
+											"status":{
+												"type":"string", 
+												"index":"not_analyzed"
+											}
+										}
+									},
+									"UserInfo":{
+										"properties":{
+											"firstName":{"type":"string"},
+											"lastName":{"type":"string"}
+										}
+									},
+									"banner":{"type":"string"},
+									"customerId":{"type":"string"},
+									"date":{"type":"date","format":"dateOptionalTime"},
+									"erpNumber":{"type":"string"},
+									"status":{
+										"type":"string", 
+										"index":"not_analyzed"
+									},
+									"webshopNumber":{"type":"string"}
+									"SubOrders": {
+										"properties": {
+											"Lines": {
+												"properties": {
+													"code": {
+														"type": "string",
+														"index":"not_analyzed"
+													},
+													"expectedDeliveryDate": {
+														"type": "date",
+														"format": "dateOptionalTime"
+													},
+													"quantity": {
+														"type": "long"
+													},
+													"status": {
+														"type": "string"
+														
+													},
+												}
+											},
+											"date": {
+												"type": "date"
+												"format": "dateOptionalTime"
+											},
+											"erpNumber": {
+												"type": "string",
+											},
+											"status": {
+												"type": "string",
+												"index":"not_analyzed"
+											}
+										}
+									}
+								}
+							}
+}

@@ -1,0 +1,7 @@
+<svg>
+
+	<!--<rect ng-repeat="node in nodes" ng-attr-x='{{node.x}}' ng-attr-y='{{node.y}}' ng-attr-width='{{node.dx}}' ng-attr-height='{{node.dy}}' ng-attr-fill="{{node.style.fill}}" ng-attr-z-index='{{node.depth}}' stroke="#fff"> </rect>-->
+	<g ng-attr-transform="translate({{transform.width}}, {{transform.height}})">
+		<path ng-repeat="node in nodes" ng-attr-d="{{node.path}}" ng-attr-fill="{{node.style.fill}}" ng-attr-z-index='{{node.depth}}' stroke="#fff" ng-attr-display="{{node.style.display}}"></path>
+	<g>
+</svg>

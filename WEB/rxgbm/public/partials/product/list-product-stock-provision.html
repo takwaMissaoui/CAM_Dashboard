@@ -1,0 +1,41 @@
+
+<div class="panel rx-main-panel">
+
+	<div class="panel-heading"> Rexel Provision per Product : {{nbResults}}</div>
+	<div class="panel-body">
+
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					
+					<th> Product</th>
+					<th> Quantity</th>
+					<th>Expected Delivery Date</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="supply in tabSupply">
+
+					<td>{{supply.code}}</td>
+					<td>{{supply.quantity}}</td>
+					<td>{{supply.expectedDeliveryDate| date:'yyyy-MM-dd'}}</td>
+					
+
+				</tr>
+
+			</tbody>
+
+
+		</table>
+
+	</div>
+	<div class="panel-footer" ng-hide="angular.isUndefined(productId)|| productId==null">total quantity for product number :{{productId}} is :{{totalPP}} </div>
+
+	<div class="panel-footer text-center form-inline" ng-hide="nbResults < pageSize">
+
+	  	<input style="width:100px" class="form-control" type="number" ng-model="pageNum" ng-change="navToPage(pageNum)"  min="1" max="{{pageRange[pageRange.length - 1]}}"> / {{pageRange[pageRange.length - 1]}}
+		
+	</div><!--footer -->
+
+</div>

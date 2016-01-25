@@ -1,0 +1,12 @@
+{
+  "name": "rxgbm",
+  "description": "Rexel Global Monitoring Application to monitor all flows on Rexel with TIBCO",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "4.x"
+  }
+}

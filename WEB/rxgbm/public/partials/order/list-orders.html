@@ -1,0 +1,41 @@
+
+
+<div class="panel rx-main-panel">
+	<div class="panel-heading">{{nbResults}} orders found      <small style="float:right"> todo : order by pertinence / Status</small></div>
+	<div class="panel-body">
+		<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></th>
+				<th ng-show="country.id == 'global'"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></th>
+				<th ng-hide="customerId != null">Customer</th>
+				<th># order</th>
+				<th>Evts / subOrders</th>
+				<th>Date</th>
+				<th>Nb products</th>
+				<th>Status</th>
+				<th>Amount</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat='order in orders'>
+				<td> <span ng-class="((order._source.Events[0].type=='wssync-addorder' || order._source.Events[0].type=='webshop-addorder' )? 'glyphicon glyphicon-cloud' : 'glyphicon glyphicon-floppy-disk' )" aria-hidden="true"></span> </td>
+				<td ng-show="country.id == 'global'"><a ng-href='#/{{order._index | indexToCountryId}}' >{{order._index | indexToCountryId}}</a></td>
+				<td ng-hide="customerId != null"><a ng-href='#/{{order._index | indexToCountryId}}/customer/{{order._source.customerId}}'> {{order._source.customerId}}</a></td>
+				<td> <a ng-href='#/{{order._index | indexToCountryId}}/customer/{{order._source.customerId}}/{{order._source.erpNumber}}'>{{order._source.erpNumber}} </a></td>
+				<td> {{order._source.Events.length}} / {{order._source.SubOrders.length}}</td>
+				<td title="{{order._source.date| date : 'yy-MM-dd HH:mm'}}"> {{order._source.date | rxgbmTimeAgo}}</td>
+				<td> {{order._source.Lines.length}} </td>
+				<td> {{order._source.status | orderStatusToName}} </td>
+				<td> {{order._source.Amount.afterTaxes}} </td>
+			</tr>
+		</tbody>
+		</table>
+	</div>
+	<div class="panel-footer text-center form-inline" ng-hide="nbResults < pageSize">
+
+	  	<input style="width:100px" class="form-control" type="number" ng-model="pageNum" ng-change="navToPage(pageNum)"  min="1" max="{{pageRange[pageRange.length - 1]}}"> / {{pageRange[pageRange.length - 1]}}
+		
+	</div><!--footer -->
+</div> <!--panel -->
+

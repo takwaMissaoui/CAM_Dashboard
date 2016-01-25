@@ -1,0 +1,17 @@
+<div class="btn-group btn-block" dropdown is-open="status.isopen">
+ <a href class="dropdown-toggle" dropdown-toggle>
+    {{label}} <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu" style="min-width:690px">
+  		<ul class="list-inline" style="margin-left:10px">
+			<li>
+				From : {{ date.from | date:'yyyy-MM-dd hh:mm' }}
+				<datetimepicker ng-model="date.from" style="border: 1px solid grey" data-on-set-time="onTimeFromSet()" data-before-render="beforeRenderFrom($view, $dates, $leftDate, $upDate, $rightDate)"></datetimepicker>
+			</li>
+			<li>
+				To : {{ date.to | date:'yyyy-MM-dd hh:mm' }}
+				<datetimepicker ng-model="date.to" style="border: 1px solid grey" data-on-set-time="onTimeToSet()" data-before-render="beforeRenderTo($view, $dates, $leftDate, $upDate, $rightDate)"> </datetimepicker>
+			</li>
+		</ul>
+  </ul>
+</div>

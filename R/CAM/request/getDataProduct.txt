@@ -1,0 +1,33 @@
+ {
+     "aggs": {
+         "group_by_customer": {
+             "terms": {
+                 "field": "customerId",
+                 "size":0
+             },
+             "aggs": {
+                "nbr_search": {
+                     "sum": {
+                         "field": "browsed.search"
+                     }
+                 },
+                 "nbr_direct": {
+                     "sum": {
+                         "field": "browsed.direct"
+                     }
+                 },
+                 "nbr_stock": {
+                     "sum": {
+                         "field": "browsed.stock"
+                     }
+                 },
+                 "nbr_price": {
+                     "sum": {
+                         "field": "browsed.price"
+                     }
+                 }
+             }
+         }
+     },
+     "size":0
+ }

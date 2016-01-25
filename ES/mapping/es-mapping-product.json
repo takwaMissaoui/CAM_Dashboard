@@ -1,0 +1,28 @@
+{
+	"product":{
+		"properties":{
+			"browsed":{
+				"properties":{
+					"direct":{"type":"long"},
+					"orders":{"type":"string"},
+					"price":{"type":"long"},
+					"search":{"type":"long"},
+					"stock":{"type":"long"}
+				}
+			},
+			"customerId":{"type":"string"},
+			"date":{
+				  "type": "date",
+                  "format": "dateOptionalTime"
+			},
+			"price":{"type":"double"},
+			"productCode":{"type":"string"},
+			"stock":{
+				"properties":{
+					"branchId":{"type":"string"},
+					"quantity":{"type":"long"}
+				}
+			}
+		}
+	}
+}

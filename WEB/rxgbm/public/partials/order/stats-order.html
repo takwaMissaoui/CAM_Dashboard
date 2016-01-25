@@ -1,0 +1,25 @@
+<div class="panel rx-main-panel">
+	<div class="panel-heading">
+		Order statistics 
+	</div>
+	<div class ="panel-body">
+		<h4>Online delivery mode <small style="float:right">Collect {{collect}} / Deliver {{deliver}}  </small></h4>
+		<div class="progress">
+			  <div class="progress-bar" style="width:{{perDeliverFromOnlines | number : 0}}%;">
+			    {{perDeliverFromOnlines | number : 0}}% Deliver
+			  </div>
+			  <div class="progress-bar progress-bar-info" style="width:{{perCollectFromOnlines | number : 0}}%;">
+			    {{perCollectFromOnlines | number : 0}}% Collect
+			  </div>
+		</div>
+		<h4 >Order channel onlines <small style="float:right">Online {{onlines}} / offline {{offlines}}  </small></h4>
+		<div class="progress">
+			  <div class="progress-bar progress-bar-success" style="width:{{pourcentageOnlines | number : 0}}%;">
+			    {{pourcentageOnlines | number : 0}}% Online
+			  </div>
+			  <div class="progress-bar progress-bar-warning" style="width:{{pourcentageOfflines | number : 0}}%;">
+			    {{pourcentageOfflines | number : 0}}% Offline
+			</div>
+		</div>
+</div>
+

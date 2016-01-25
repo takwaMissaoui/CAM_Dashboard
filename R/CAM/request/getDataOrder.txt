@@ -1,0 +1,73 @@
+{
+    "size": 0,
+    "aggs": {
+        "group_by_customer": {
+            "terms": {
+                "field": "customerId",
+				"size":0
+            },
+            "aggs": {
+                "montant_total": {
+                    "sum": {
+                        "field": "Amount.afterTaxes"
+                    }
+                },
+				"montant_Online": {
+					"filter":{"term":{"Events.type":"addorder"}},
+					"aggs":{
+						"valeur_montant":{
+							"sum": {
+								"field": "Amount.afterTaxes"
+							}
+						}
+					}
+                },
+				"montant_Offline": {
+					"filter":{"not":{"term":{"Events.type":"addorder"}}},
+					"aggs":{
+						"valeur_montant":{
+							"sum": {
+								"field": "Amount.afterTaxes"
+							}
+						}
+					}
+                },
+				"montant_moyen_par_commande": {
+                    "avg": {
+                        "field": "Amount.afterTaxes"
+                    }
+                },
+				"nbre_produit_par_commande": {
+                    "avg": {
+                        "field": "Lines.quantity"
+                    }
+                },
+				"nbre_order_online": {
+					"filter":{"term":{"Events.type":"addorder"}}
+
+                },
+				"nbre_order_offline": {
+					"filter":{"not":{"term":{"Events.type":"addorder"}}}
+					
+                },
+				"avg_orderPerMonth": {
+                    "scripted_metric": {
+                        "init_script": "clustering_init_script",
+                        "map_script": "clustering_map_script",
+                        "combine_script":"clustering_combine_script",
+                        "reduce_script":"clustering_reduce_script"
+                    }
+                },
+				"Time_Preference": {
+                    "scripted_metric": {
+                        "init_script": "time_init_script",
+                        "map_script": "time_map_script",
+                        "combine_script": "time_combine_script",
+                        "reduce_script": "time_reduce_script"
+                    }
+                }
+				
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+
+<table class="table" style="table-layout:fixed">
+	<thead>
+		<tr>
+			<th>
+				flow ID
+			</th>
+			<th>
+				<div rxgbm-form-dropdown-date-log date-range='field.dateRange' on-value-selection="onValueSelection"></div>
+			</th>
+			<th>Duration</th>
+			<th ng-repeat="filter in dropdownFilters" >
+				<div rxgbm-form-dropdown-log default-label="filter.label" list-values="filter.listValues" max-values-displayed="100" max-label="1" max-select="filter.maxSelect" on-value-selection="onValueSelection">	
+		    </th>
+
+			<th >Process</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tr ng-repeat="log in listLogs">
+		<td>{{log.flowId}}</td>
+		<td>{{log.startTs | date : 'yy-MM-dd HH:mm:ss.sss'}}</td>
+		<td>{{log.duration | msToTime}}</td>
+		<td>{{log.Service.country}}</td>
+		<td>{{log.Service.component}}</td>
+		<td>{{log.Service.name}}</td>
+		<td title="{{log.Service.process}}" style="text-overflow:hidden">{{log.Service.process}}</td>
+		<td ng-bind-html="log.status | rxgbmStatusLog"></td>
+	</tr>
+</table>

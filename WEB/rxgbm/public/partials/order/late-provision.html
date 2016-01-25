@@ -1,0 +1,44 @@
+<div class="panel rx-main-panel">
+
+	<div class="panel-heading"> Late Provisions : {{nbResults}}</div>
+	<div class="panel-body">
+		  	<h4 >Statistics <small style="float:right">Late {{nbResults}} / On Time {{onTime}}  </small></h4>
+			<div class="progress">
+			  		<div class="progress-bar progress-bar-warning" style="width:{{pourcentageLate | number : 0}}%;">
+			  		    {{pourcentageLate | number : 0}}% Late
+			  		</div>
+			  		<div class="progress-bar progress-bar-success" style="width:{{pourcentageOnTime | number : 0}}%;">
+			  		    {{pourcentageOnTime | number : 0}}% On Time
+			  		</div>
+			</div>
+
+		<table class="table table-hover table-bprovisioned">
+			<thead>
+				<tr>
+					<th>provision</th>
+					<th>Customer</th>
+					<th>Delay</th>
+					<th>Status</th>
+				</tr>
+
+			</thead>
+			<tbody >
+				<tr ng-repeat=" provision in lateProvisions">
+					<td><a ng-href="#/{{provision._index | indexToCountryId}}/provision/{{provision._id}}">{{provision._id}}</a></td>
+					<td> <a ng-href='#/{{provision._index | indexToCountryId}}/customer/{{provision._source.customerId}}'>{{provision._source.customerId}}</a></td>
+					<td><div ng-if="provision.fields.delay[0]!=0">{{provision.fields.delay[0]| date:'yyyy-MM-dd'}}
+						<span ng-hide="{{provision.fields.delay[0]| date:'yyyy-MM-dd'}}!={{getCurrentDate()}}"> Same day delivery</span></div>
+						<div ng-if="provision.fields.delay[0]==0">missing expected delivery date </div></td>
+					<td>{{provision._source.status| orderStatusToName}}</td>
+				</tr>
+
+
+			</tbody>
+		</table>
+	</div>
+	<div class="panel-footer  text-center form-inline" ng-hide="nbResults < pageSize">
+		
+	  	<input style="width:100px" class="form-control" type="number" ng-model="pageNum" ng-change="navToPage(pageNum)"  min="1" max="{{pageRange[pageRange.length - 1]}}"> / {{pageRange[pageRange.length - 1]}} 	
+
+	</div><!--footer -->
+</div>

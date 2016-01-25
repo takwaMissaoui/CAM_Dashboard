@@ -1,0 +1,23 @@
+<div class="btn-group btn-block" dropdown is-open="status.isopen">
+  <a href class="dropdown-toggle" dropdown-toggle>
+    {{label}} <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+  	<li style="padding: 1px 20px;">
+  		<button ng-click="clearSelection()" class="btn btn-default btn-xs btn-block"><i class="glyphicon glyphicon-remove"> </i>Clear filter</button>
+  	</li>
+  	<li ng-show="message.length > 0 ">
+		{{message}}
+    </li>
+	<form name="temp">
+	    
+	    <li ng-repeat="val in listValues" class="checkbox" style="padding: 1px 20px;">
+		    <label ng-switch="maxSelect > 1" >
+		      <input ng-switch-when="true" type="checkbox" ng-model="val.selected" ng-change='changeLabel()' ng-disabled="maxSelectReach && !val.selected" on-value-selection="onValueSelection()"> 
+			  <input ng-switch-when="false" type="radio" name='selector' ng-model="radio.val" ng-value="val" ng-change="changeSelection()" on-value-selection="onValueSelection()"> 
+		      {{val.name}}
+		    </label>
+	    </li>
+	</form>
+  </ul>
+</div>

@@ -1,0 +1,44 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel rx-main-panel">
+		  <div class="panel-heading"><span class="glyphicon glyphicon-user"> </span> {{customer.companyName}} <span style="float:right"> <span class="glyphicon glyphicon-tower"> </span>{{customer.branchId}} <span></div>
+		  <div class="panel-body">	
+			<div class="row">
+				<div class="col-lg-3">
+					<strong>Billing:</strong><br/>
+					{{customer.BillingAddress.line1}}, {{customer.BillingAddress.line2}}, {{customer.BillingAddress.line3}} <br/>
+					{{customer.BillingAddress.zipCode}} {{customer.BillingAddress.city}} <br/>
+					{{customer.BillingAddress.country}} <br/>
+				</div>
+			</div>
+		  </div>
+		</div> <!--panel -->
+	</div>
+	<!--<div class="col-lg-4 row">
+		<div class="col-lg-12">
+			<div class=" col-lg-5">
+				<div class="panel panel-primary">
+				  <div class="panel-body" style="padding-top : 0px; padding-bottom : 0px">
+						<h4><span style="font-size:20px" class="glyphicon glyphicon-cloud"> </span> 14 / 25 K</h4>
+				  </div>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="panel panel-primary">
+				  <div class="panel-body" style="padding-top : 0px; padding-bottom : 0px">
+						<h4><span style="font-size:20px" class="glyphicon glyphicon-exclamation-sign"> </span> 3</h4>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<div class=" col-lg-5">
+				<div class="panel panel-primary">
+				  <div class="panel-body" style="padding-top : 0px; padding-bottom : 0px">
+						<h4><span style="font-size:20px" class="glyphicon glyphicon-floppy-disk"> </span> 10 / 25 K</h4>
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>-->
+</div>

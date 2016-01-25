@@ -1,0 +1,27 @@
+
+<!--Dashboard for country display -->
+
+<div class="container-fluid">
+	<div class="row" rxgbm-stacked-chart-orders >
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6" ng-if='isNotGlobal' rxgbm-amount-orders>
+		</div>
+		<div class="col-lg-6" rxgbm-statics-order="">	
+		</div>
+	</div>
+	<div class="row" rxgbm-list-orders>
+	</div>
+	<div class="row" rxgbm-cluster-customer ng-if='isNotGlobal'> </div>
+
+	<div class="row">
+
+		<div class="col-lg-12" ng-if='isNotGlobal' rxgbm-list-favorite-products>
+		</div>
+	</div>
+</div>
+
+
+
+

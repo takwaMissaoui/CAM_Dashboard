@@ -1,0 +1,70 @@
+concat('<html>
+<body style="',(if($Start/SendMail/ERROR/ERROR_DETAILS/ERROR_SEVERITY  = "1") 
+	then 'background-color:red;' else if($Start/SendMail/ERROR/ERROR_DETAILS/ERROR_SEVERITY  = "2") 
+	then 'background-color:orange;' else 
+	'background-color:yellow;'),'
+	font-family: Arial, sans-serif; font-size: 14px; line-height: 1,429; padding:15px">
+	<center><b>This is a TIBCO automated mail, please do not reply</b></center>
+	<table style="background-color:#fff; border:1px grey solid;" cellpadding="0" cellspacing="0" width="100%">
+		<tr> 
+			<td style=" padding: 15px; border-bottom:1px grey solid" colspan="2"><B><center>Error severity : ',$Start/SendMail/ERROR/ERROR_DETAILS/ERROR_SEVERITY,' </center></B></td> 
+		</tr>
+		<tr> 
+			<td style=" padding: 15px"><B>Date </B></td>
+			<td>',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:timestamp,'</td>
+		</tr>
+		<tr style="padding: 0 15px 0 16px"> 
+			<td style=" padding: 15px" ><B>Category</B></td>
+			<td >',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:category,'</td>
+		</tr>
+		<tr> 
+			<td style=" padding: 15px" ><B>Recommandation</B></td> 
+			<td>',$Variable1/root/Error_Details/required_action,'</td>
+		</tr>','
+		<tr> 
+			<td style=" padding: 15px"><B>More details</B></td>',' 
+			<td><a href=','http://',$_globalVariables/pfx3:GlobalVariables/UtilityServices/ExceptionHandling/UIDetails/Host,':',$_globalVariables/pfx3:GlobalVariables/UtilityServices/ExceptionHandling/UIDetails/Port,'/',$_globalVariables/pfx3:GlobalVariables/UtilityServices/ExceptionHandling/UIDetails/URL,'/monitoringToolController/onAttNameValFromPanelAction.html?attName=',$_globalVariables/pfx3:GlobalVariables/UtilityServices/ExceptionHandling/UIDetails/AttributeToSearch,'&amp;attValue=',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:correlationId,'>',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:correlationId,'</a></td>
+		</tr>
+		<tr> 
+			<td  style=" padding: 15px"><B>Frequency:<B></td>
+			<td>', concat(if (exists($GetFromMemory/ERROR/ERROR_DETAILS[
+COUNTRY=$Start/SendMail/ERROR/ERROR_DETAILS/COUNTRY
+and
+APP_NAME=$Start/SendMail/ERROR/ERROR_DETAILS/APP_NAME
+and
+TRANS_NAME=$Start/SendMail/ERROR/ERROR_DETAILS/TRANS_NAME
+and
+ERROR_CATEGORY=$Start/SendMail/ERROR/ERROR_DETAILS/ERROR_CATEGORY
+and
+ERROR_SEVERITY=$Start/SendMail/ERROR/ERROR_DETAILS/ERROR_SEVERITY
+and
+WEIGHT=$Start/SendMail/ERROR/ERROR_DETAILS/WEIGHT]/COUNT)) then ($GetFromMemory/ERROR/ERROR_DETAILS[
+COUNTRY=$Start/SendMail/ERROR/ERROR_DETAILS/COUNTRY
+and
+APP_NAME=$Start/SendMail/ERROR/ERROR_DETAILS/APP_NAME
+and
+TRANS_NAME=$Start/SendMail/ERROR/ERROR_DETAILS/TRANS_NAME
+and
+ERROR_CATEGORY=$Start/SendMail/ERROR/ERROR_DETAILS/ERROR_CATEGORY
+and
+ERROR_SEVERITY=$Start/SendMail/ERROR/ERROR_DETAILS/ERROR_SEVERITY
+and
+WEIGHT=$Start/SendMail/ERROR/ERROR_DETAILS/WEIGHT]/COUNT) else 0,' ','Times in last ',if (exists($Map-Data/Match/TimeDiff)) then $Map-Data/Match/TimeDiff else 0,"  minutes","</td></tr>")
+		,'<tr > 
+			<td  style="padding: 15px; border-bottom:1px grey solid; border-top:1px grey solid" colspan="2"><B><center>Technical details</center></B></td> 
+		</tr>
+		<tr > 
+			<td style=" padding: 15px"><B>Exception Code</B></td> 
+			<td>',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:exceptionCode,'</td>
+		</tr>
+		<tr> 
+			<td style=" padding: 15px"><B>Exception Message</B></td> 
+			<td>',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:exceptionMessage,'</td>
+		</tr>
+		<tr>
+			<td  style=" padding: 15px"><B>ErrorStacktrace</B></td>
+			<td style="font-family: courier; font-size: 14px">',$ParseException/pfx4:CreateExceptionRequest/ns5:Exception/ns5:stackTrace,'</td>
+		</tr>
+	</table>
+</body>
+</html>')

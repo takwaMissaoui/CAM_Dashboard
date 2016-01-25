@@ -1,0 +1,38 @@
+
+<div class="panel rx-main-panel">
+	<div class="panel-heading">{{termSize}} favorites products</div>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th># code</th>
+				<th>score</th> 
+				<th>search page</th> 
+				<th>product page</th>
+				<th>checkout page</th>
+				<th>stock req.</th> 
+				<th>order</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat='product in products'>
+				<td> 
+					<div ng-switch on="customerId">
+					    <div ng-switch-when="null">
+					        <a href="#/{{country}}/product/{{product.key}}">{{product.key}} </a>
+					    </div>
+					    <div ng-switch-default>
+					        <a href="#/{{country}}/customer/{{customerId}}/product/{{product.key}}">{{product.key}} </a>
+					    </div>
+					</div>
+				</td>
+				<td> {{Math.ceil(product.total_score.value)}} </td>
+				<td> {{product.total_search.value}} </td>
+				<td> {{product.total_direct.value}} </td>
+				<td> {{product.total_price.value}} </td>
+				<td> {{product.total_stock.value}} </td>
+				<td> {{product.total_order.value}} </td>
+			</tr>
+		</tbody>
+	</table>
+</div> <!--panel -->

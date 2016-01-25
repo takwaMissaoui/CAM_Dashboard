@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" lang="fr" ng-app="rxgbm" id="ng-app" >
+  <head>
+	<meta name="fragment" content="!" />
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>C360</title>
+
+
+	
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="css/loading-bar.css" rel="stylesheet" type="text/css">
+
+	<link href="css/nv.d3.min.css" rel="stylesheet" type="text/css">
+	<link href="css/cam_style.css" rel="stylesheet" type="text/css">
+	<script src="js/common/angular.min.js"></script>
+	<script src="js/common/angular-route.min.js"></script>
+	<script src="js/common/elasticsearch.angular.min.js"></script>
+	<script src="js/common/loading-bar.js"></script>
+	<script src="js/common/d3.min.js" charset="utf-8"></script>
+	<script src="js/common/nv.d3.min.js" charset="utf-8"></script>
+	<script src="js/common/angular-nvd3.js" charset="utf-8"></script>
+	<script src="js/common/moment.js"></script>
+	<script src="js/common/ui-bootstrap-dropdown-0.12.1.min.js"></script>
+	<script src="js/common/ui-bootstrap-popover-0.12.1.min.js"></script>
+	<script src="js/common/angular-sanitize.min.js"></script>
+	<script src="js/common/ui-bootstrap-tpls.min.js"></script>
+	<script src="js/common/datetime-picker.js"></script>
+	<script src="js/common/datetime-picker.tpls.js"></script>
+	<script src="js/common/datetime-picker.min.js"></script>
+
+
+	
+	<!--<script src="js/log/rxgbm-log.js"></script> -->
+
+	<script src="js/index.js"></script>
+	
+	<script src="js/dashboard/service-dashboard-context.js"></script>
+	<script src="js/dashboard/controller-dashboard-country.js"></script>
+	<script src="js/dashboard/controller-dashboard-customer.js"></script>
+	<script src="js/dashboard/controller-dashboard-order.js"></script>
+	<script src="js/dashboard/controller-dashboard-log.js"></script>
+	<script src="js/dashboard/controller-dashboard-product.js"></script>
+	<script src="js/dashboard/controller-dashboard-supply.js"></script>
+	<script src="js/dashboard/controller-nav-index.js"></script>
+
+	<script src="js/customer/directive-details-customer.js"></script>
+	<script src="js/customer/controller-details-customer.js"></script>
+	<script src="js/customer/directive-cluster-client.js"></script>
+	<script src="js/customer/controller-cluster-client.js"></script>
+	
+	<script src="js/event/directive-list-events.js"></script>
+
+	<script src="js/order/directive-stackedchart-orders.js"></script>
+	<script src="js/order/controller-stackedchart-orders.js"></script>
+	
+	<script src="js/order/directive-list-orders.js"></script>
+	<script src="js/order/controller-list-orders.js"></script>
+
+	<script src="js/order/directive-details-order.js"></script>
+	<script src="js/order/controller-details-order.js"></script>
+
+	<script src="js/order/directive-statics-orders.js"></script>
+	<script src="js/order/controller-statics-orders.js"></script>
+	
+	<script src="js/products/controller-list-favorite-products.js"></script>
+	<script src="js/products/directive-list-favorite-products.js"></script>
+
+		<script src="js/products/controller-list-never-bought.js"></script>
+	<script src="js/products/directive-list-never-bought.js"></script>
+	
+	<script src="js/products/directive-details-product.js"></script>
+
+	<script src="js/products/controller-stackedchart-product-orders.js"></script>
+	<script src="js/products/directive-stackedchart-product-orders.js"></script>
+
+	<script src="js/products/controller-stackedchart-product-score.js"></script>
+	<script src="js/products/directive-stackedchart-product-score.js"></script>
+
+	<script src="js/products/controller-linechart-product-price.js"></script>
+	<script src="js/products/directive-linechart-product-price.js"></script>
+
+	<script src="js/supply/directive-late-order.js"></script>
+	<script src="js/supply/controller-late-order.js"></script>
+
+	<!-- ***************************************************
+	 to add when update on Rexel order status is enabled
+	<script src="js/supply/directive-late-provision.js"></script>
+	<script src="js/supply/controller-late-provision.js"></script>-->
+
+	<script src="js/order/directive-amount-orders.js"></script>
+	<script src="js/order/controller-amount-orders.js"></script>	
+	<script src="js/supply/directive-linechart-orders.js"></script>
+	<script src="js/supply/controller-linechart-orders.js"></script>	
+	<script src="js/supply/directive-supply.js"></script>
+	<script src="js/supply/controller-supply.js"></script>
+
+	<!--<script src="js/log/directive-form-search-log.js"></script>
+	<script src="js/log/directive-tree-map-log.js"></script>
+	<script src="js/log/directive-list-logs.js"></script>
+	<script src="js/log/directive-form-dropdown-log.js"></script>
+	<script src="js/log/directive-form-dropdown-date-log.js"></script>
+	<script src="js/log/filter-status-log.js"></script> -->
+
+
+</head>
+
+
+<body ng-app="rxgbm" ng-controller="NavIndexCtrl">
+	<nav class="navbar navbar-primary navbar-fixed-top" >
+		<div class="container-fluid" >
+		    <div class="navbar-header">
+		    		<a class="navbar-brand" href="#">CAM Beta</a>
+		    </div>
+		   
+		      <ul class="nav navbar-nav navbar-right navbar-primary" >
+		      	<li>
+		      		<form class="navbar-form 	form-inline" role="search">
+	      			
+			      	<div class="form-group">
+
+			      		<input type="text" class="form-control" datetime-picker="yyyy-MM-dd"  is-open="navs.date.open.from" enable-time="false" datepicker-options="navs.date.options"  close-on-date-selection="true" datepicker-append-to-body="false" clear-text="Remove" ng-model="navs.date.from" placeholder="From" ng-click="openCalendar($event, 'from')"/>
+			      		<input type="text" class="form-control" datetime-picker="yyyy-MM-dd"  is-open="navs.date.open.to" enable-time="false" datepicker-options="navs.date.options"  close-on-date-selection="true" datepicker-append-to-body="false" clear-text="Remove" ng-model="navs.date.to" placeholder="To"/ ng-click="openCalendar($event, 'to')">
+			      		<button type="submit" class="btn btn-info" ng-click="navs.date.select()" style="width:50px;"><span class="glyphicon glyphicon-ok"></span></button>
+
+		      		</div>
+	      		</form>
+		      	</li>
+		      </ul>
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-1 sidebar"  >
+				<ul class="nav rx-left-nav">
+					<li ng-class="navs.country.active ? 'current':''">
+						<a href="#/{{navs.country.value.id}}" >
+							<span class="glyphicon glyphicon-globe"></span> 
+						</a>
+							<div class="form-group" ng-show="navs.country.display">
+
+								<span class="nav-text">{{navs.country.actualName}}</span>
+								<button class="btn btn-default btn-sm" ng-click="edit('country')"><span class="glyphicon glyphicon-pencil"></span></button>
+							    
+							</div>
+
+							<div class="form-group" ng-hide="navs.country.display">
+								<select  ng-model ="navs.country.value" ng-options="item as item.name for item in navs.country.listValues" ng-change="navs.country.select()"  class="form-control input-sm">
+					 			</select>
+							</div>
+					</li>
+					<li ng-class="navs.customer.active ? 'current':''">
+						<a href="#/{{navs.country.value.id}}/customer/{{navs.customer.id}}" >
+					
+							<span class="glyphicon glyphicon-user"></span>
+						</a>
+							<div class="form-group" ng-show="navs.customer.display"> 
+								<span class="nav-text">{{navs.customer.actualName}}</span>
+								<button class="btn btn-default btn-sm" ng-click="edit('customer')"><span class="glyphicon glyphicon-pencil"></span></button>
+							</div>
+						
+							<div class="input-group" ng-hide="navs.customer.display">
+							      <input type="text" class="form-control input-sm" ng-model="navs.customer.id" ></input>
+							      <span class="input-group-btn">
+							        <button class="btn btn-default btn-sm" type="button" ng-click="navs.customer.select()"
+							        ><span class="glyphicon glyphicon-ok"></span></button>
+							      </span>
+							</div>
+						
+					</li>
+
+
+					<li ng-class="navs.order.active ? 'current':''">	
+						<a href="#/{{navs.country.value.id}}/customer/{{navs.customer.id}}/{{navs.order.id}}" >
+								<span class="glyphicon glyphicon-shopping-cart"></span> 
+						</a>
+						<div class="form-group" ng-show="navs.order.display"> 
+							<span class="nav-text">{{navs.order.actualName}}</span>
+							<button class="btn btn-default btn-sm" ng-click="edit('order')"><span class="glyphicon glyphicon-pencil"></span></button>
+						</div>
+
+						<div class="input-group" ng-hide="navs.order.display">
+						      <input type="text" class="form-control input-sm" ng-model="navs.order.id"></input>
+						      <span class="input-group-btn">
+						        <button class="btn btn-default btn-sm" type="button" ng-click="navs.order.select()">
+						        	<span class="glyphicon glyphicon-ok"></span>
+						        </button>
+						      </span>
+						</div>
+			
+					</li>
+					<li ng-class="navs.product.active ? 'current' : ''">
+						<a href="#/{{navs.country.value.id}}/customer/{{navs.customer.id}}/{{navs.product.id}}" >
+						
+							<span class="glyphicon glyphicon glyphicon-book"></span> 
+						</a>	
+
+							<div class="form-group" ng-show="navs.product.display"> 
+								<span class="nav-text">{{navs.product.actualName}}</span>
+								<button class="btn btn-default btn-sm" ng-click="edit('product')"><span class="glyphicon glyphicon-pencil"></span></button>
+							</div>
+
+							<div class="input-group" ng-hide="navs.product.display">
+							      <input type="text" class="form-control input-sm" ng-model="navs.product.id" ></input>
+							      <span class="input-group-btn">
+							        <button class="btn btn-default btn-sm" type="button" ng-click="navs.product.select()"
+							        ><span class="glyphicon glyphicon-ok"></span></button>
+							      </span>
+							</div>
+
+						
+					</li>				
+					<li>
+						<a ng-if="navs.country.value.id !='global' && navs.product.id == null" ng-href="#/{{navs.country.value.id}}/supply" >
+							<span class="glyphicon glyphicon-road"></span> 
+						</a>
+
+						<a ng-if="navs.country.value.id !='global' && navs.product.id != null" ng-href="#/{{navs.country.value.id}}/supply/product/{{navs.product.id}}" >
+							<span class="glyphicon glyphicon-road"></span> 
+						</a>
+
+						<a ng-if="navs.country.value.id =='global'" ng-href="#/{{navs.country.value.id}}" ng-click="alert()">
+							<span class="glyphicon glyphicon-road"></span> 
+						</a>
+
+						<div class="form-group">
+							<span class="nav-text">Supply</span>
+						</div>
+						
+					</li>
+
+					
+				</ul>
+				<div style="position: absolute;bottom:0px;">
+						    <a href="mailto:bruno.delabreteche@rexel.com?subject='CAM Bug Report :('&body='{{bugReport}}'" style="color:red"> Report a bug</a>
+				</div>
+			</div>
+			<div class="col-lg-11 col-lg-offset-1" style="background-color:#f5f5f1; padding-top:50px" ng-view>
+				<!--CONTENT OF THE PAGE-->
+			</div>
+		</div>
+
+	<div> 
+
+</body>
+</html>
+

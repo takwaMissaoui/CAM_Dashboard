@@ -1,0 +1,21 @@
+<div class="row">
+	<div class="col-lg-4">
+		<div class="panel rx-main-panel">
+
+			<select  ng-model ="selectedX" ng-options="item as item.value for item in xValues" ng-change="displayGraph()"  class="form-control input-sm">
+			</select>
+			<br/>
+			<br/>
+			<select  ng-model ="selectedY" ng-options="item as item.value for item in yValues" ng-change="displayGraph()"  class="form-control input-sm">
+			</select>
+
+		</div>
+	</div>
+	<div class="col-lg-8">
+		<div class="panel rx-main-panel">
+			<img ng-src="data:image/png;base64,{{image}}" >
+			<a target="_self"   href="{{country}}/files/{{selectedX.number}}/{{selectedY.number}}"class="btn btn-primary"  download="file.csv" > Download </a>
+
+		</div>
+	</div>
+</div>

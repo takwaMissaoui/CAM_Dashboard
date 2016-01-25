@@ -1,0 +1,158 @@
+
+rxgbm.controller('StackedChartOrdersCtrl', ['$scope', 'esClient', '$filter', 'dashboardContext', function($scope, esClient, $filter, dashboardContext){
+	$scope.searchBy = "status_by_date"
+
+	var getInterval = function(){
+		var diff = dashboardContext.getDateRange().to.diff(dashboardContext.getDateRange().from, 'days');
+		
+		if(diff <= 2)
+			return "hour"
+		if(diff <= 7)
+			return "6h"
+		if(diff <= 15)
+			return "12h"
+		if(diff <= 30)
+			return "1d"
+		if(diff <= 60)
+			return "2d"
+		return "1M";
+
+	}
+	var getDateFormat = function(){
+			var interToDate = {
+				"hour" : {es: "yyyy-MM-dd HH", chart : "%d-%m %H:00", moment : "YYYY-MM-DD HH"},
+				"6h" :  {es: "yyyy-MM-dd HH", chart : "%y-%d-%m %H:00", moment : "YYYY-MM-DD HH"},
+				"12h" : {es: "yyyy-MM-dd HH", chart : "%y-%d-%m %H:00", moment : "YYYY-MM-DD HH"},
+				"1d" :  {es: "yyyy-MM-dd", chart : "%d-%m", moment : "YYYY-MM-DD"},
+				"2d" :  {es: "yyyy-MM-dd", chart : "%d-%m", moment : "YYYY-MM-DD"},
+				"1M" :  {es: "yyyy-MM", chart : "%Y-%m", moment : "YYYY-MM"},
+			}
+
+			var inter = getInterval();
+			
+			return interToDate[inter];
+	}
+
+	$scope.options = {
+		chart : {
+			type : 'stackedAreaChart',
+			height: 300,
+                padding : {
+                    top: 20,
+                    right: 0,
+                    bottom: 60,
+                    left: 0
+                },
+            x: function(d){return moment(d.date, getDateFormat().moment).toDate()},
+            y: function(d){return d.count || 0;},
+            useVoronoi: false,
+            clipEdge: true,
+            transitionDuration: 500,
+            useInteractiveGuideline: true,
+            xAxis: {
+                    showMaxMin: false,
+                    tickFormat: function(d) {
+                        return d3.time.format(getDateFormat().chart)(moment(d).toDate());
+                    }
+            },
+             yAxis: {
+                    tickFormat: function(d){
+                        return "#" + d3.format(',f')(d);
+                    }
+            }
+		}
+	}
+
+
+
+	$scope.computeResponse = function(resp){
+		var agg = resp.aggregations;
+		var results = agg.term_search.buckets;
+		this.tmpdata = [];
+
+		angular.forEach(results, function(obj, key){
+				var serie =  {
+					key : $filter('orderStatusToName')(obj.key),
+					values : []
+				}
+				for (i in obj.orders_over_time.buckets)
+					serie.values.push({
+						'date' : obj.orders_over_time.buckets[i].key_as_string,
+						'count' : obj.orders_over_time.buckets[i].doc_count
+						})
+
+				this.tmpdata.push(serie);
+		}, this)//angular.foreach
+
+	//fill blank data.
+		
+		var listValue = {}; //  date : [serie1, serie2, ...]
+		var listSerie = []; // [serie1, serie2, ...]
+		for (i in this.tmpdata){
+			var serie = this.tmpdata[i].values;
+			listSerie.push(this.tmpdata[i].key);
+			/** add the name of the serie to the list of value to identify missing value**/
+			for (j in serie)
+				if(angular.isDefined(listValue[serie[j].date]))
+				 	listValue[serie[j].date].push(this.tmpdata[i].key);
+				 else
+				 	listValue[serie[j].date] = [this.tmpdata[i].key]
+		}
+		var idx= 0;
+		for (k in listValue){
+			if(listValue[k].length <  listSerie.length){ // there is a missing data.
+				//identify missing serie
+				var missingSerie = [];
+				for(w in listSerie)
+					if(listValue[k].indexOf(listSerie[w]) == -1)
+						missingSerie.push(w)
+				//creating the missing data;
+				for(y in missingSerie)
+					this.tmpdata[missingSerie[y]].values.splice(idx , 0, {
+						'date' : k,
+						'count' : 0
+					})
+			}//if
+			idx++;
+		}
+		$scope.data = this.tmpdata;
+	};
+
+
+
+	$scope.computeQuery = function(){
+		var body = {
+			query : {
+				filtered : {
+				"filter" : dashboardContext.getFilter(["customerId"]),
+			}}
+
+		};
+
+		body.aggs = {
+            		"term_search" : {
+            			terms : {
+            				"field" : "status",
+            				"size" : "40"
+            			}
+		        	
+		        	}//status_by_date
+		}//body.aggs
+
+		return body;
+	}
+
+	esClient.search({
+		index : dashboardContext.getIndex(),
+		type : 'order',
+		size : 1,
+		body : $scope.computeQuery()
+	}).then(function (resp) {
+			$scope.computeResponse(resp)
+			console.log(resp);
+			//$scope.draw();
+		}).catch(function (err) {
+			console.error('ERROR:', err);
+	});
+
+}]);

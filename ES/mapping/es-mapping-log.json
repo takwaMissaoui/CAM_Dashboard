@@ -1,0 +1,52 @@
+{"log":{
+			"properties":{
+				"Error":{
+					"properties":{
+						"severity":{"type":"string"},
+						"stacktrace":{
+							"type":"string", 
+							"index":"no"
+						},
+						"type":{
+							"type":"string",
+							"index":"not_analyzed"
+						}
+					}
+				},
+				"Service":{
+					"properties":{
+						"category":{
+							"type":"string",
+							"index":"not_analyzed"
+						},
+						"component":{
+							"type":"string",
+							"index":"not_analyzed"
+						},
+						"country":{
+							"type":"string",
+							"index":"not_analyzed"
+						},
+						"name":{
+							"type":"string",
+							"index":"not_analyzed"
+						},
+						"payload":{
+							"properties":{
+								"in":{"type":"string", "index":"no"},
+								"out":{"type":"string", "index":"no"}
+							}
+						},
+						"process":{"type":"string"}
+					}
+				},
+					"duration":{"type":"long"},
+					"endTs":{"type" : "date"},
+					"flowId":{
+						"type":"string", 
+						"index":"not_analyzed"
+					},
+					"startTs":{"type" : "date"},
+					"status":{"type":"long"}
+				}
+			}}

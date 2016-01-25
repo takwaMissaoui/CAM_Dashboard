@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" lang="en" ng-app="mon" id="ng-app" >
+  <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Rexel Tibco Monitoring</title>
+
+
+	<link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="static/jquery.datetimepicker.css" rel="stylesheet">
+	<link href="static/loading-bar.css" rel="stylesheet">
+	<link href="static/bootstrap-vertical-tabs.css" rel="stylesheet">
+	<link href="static/prism.css" rel="stylesheet">
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	  <script src="static/html5shiv.js"></script>
+      <script src="static/respond.min.js"></script>
+	<![endif]-->
+	<script src="static/jquery-1.11.0.js"></script>
+	<script src="static/jquery.xml2json.js"></script>
+	<script src="static/bootstrap/js/bootstrap.js"></script>
+	<script src="static/angular.min.js"></script>
+	<script src="static/angular-route.min.js"></script>
+	<script src="static/angular-sanitize.min.js"></script>
+	<script src="static/angular-animate.min.js"></script>
+	<script src="static/ng-infinite-scroll.min.js"></script>
+	<script src="static/jquery.datetimepicker.js"></script>
+	<script src="static/loading-bar.js"></script>
+	<style>
+	.container {
+		padding:0px
+	}
+	.result-header{
+		color: #444;
+		font-weight:bold;
+		background: -webkit-linear-gradient(top, #f8f8f8, #f2f2f2);
+		
+    }
+	.result-header .result-header-col{
+		text-align:center;
+		border-bottom:1px solid #dddddd;
+		border-left:1px solid #dddddd;
+		padding: 8px 15px;
+    }
+	#result_panel .result-lines{
+	   padding:0px;
+	   padding-bottom:10px;
+    }
+	.result-lines .result-line{
+		text-align:center;
+    }
+	.result-line .result-line-col{
+		border-left:1px solid #dddddd;
+		border-bottom:1px solid #dddddd;
+		padding:3px;
+		vertical-align:middle;
+		min-height:30px;
+		background:#fff;
+    }
+	#detail_panel{
+		right:0px;
+		top:0px;
+		height:100%;
+		width:50px;
+		background-color:#fcfcfc;
+		box-shadow: 0px 1px 2px 3px rgba(0, 0, 0, 0.3);
+		position:fixed;
+		z-index:1000;
+	}
+	#detail_panel .left-nav{
+		width:50px;
+		background-color:#f4f4f4;
+		height:100%;
+		background: -webkit-linear-gradient(right, #f4f4f4, #f2f2f2);
+		
+		text-align:center;
+		padding-top:0px;
+		float:left;
+	}
+	.left-nav button{
+		padding: 5px;10px;
+		border-radius: 0px;
+		margin-bottom:30px;
+	}
+	#detail_panel .right-content{
+		height:100%;
+		width:100%
+		float:left;
+		padding-left:10px;
+		padding-right:10px;
+		overflow-y:scroll;
+	}
+	.right-content .flow-panel{
+		width:100%;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		border:1px solid #dddddd;
+		margin-top:10px;
+	}
+	.flow-panel .flow-panel-header{
+		height:30px;
+		margin-top:10xp;
+		background: -webkit-linear-gradient(top, #fdfdfd, #eaeaea);
+		width:100%;
+		vertical-align:middle;
+		padding:5px;
+		color:#636363;
+	}
+	.flow-panel .flow-panel-content{
+		padding:5px;
+	}
+	.flow-panel .flow-panel-errors{
+		width:100%
+	}
+	.flow-panel-errors .flow-panel-error{
+		width:100%;
+	}
+	.flow-panel-error .flow-panel-error-header{
+		width:100%;
+		border-top:1px solid #dddddd;
+		border-bottom:1px solid #dddddd;
+		border-left: 5px solid #dddddd;
+		padding:5px;
+	}
+	.flow-panel-error .flow-panel-error-content{
+		width:100%;
+		border-bottom:1px solid #dddddd;
+		border-left: 1px solid #dddddd;
+		padding:5px;
+		margin-left:10px;
+		margin-right:5px;
+		word-wrap: break-word;
+	}
+	
+	.tabs-left {
+		border-bottom:0px;
+		border-top: 1px solid #ddd;
+	}
+	.tabs-left>li {
+		float: none;
+		margin-bottom: 0px;
+		margin-top: 0px;
+		border-bottom: 1px solid #ddd;
+	}
+	.tabs-left>li.active>a, .tabs-left>li.active>a:hover, .tabs-left>li.active>a:focus {
+		border-right-color: white;
+		margin-bottom: 0px;
+		margin-top: 0px;
+		border-radius : 0px;
+	}
+	.tabs-left>li>a {
+		margin-right: 0;
+		display:block;
+	}
+    </style>
+	<script>
+	 var detail_panel = {
+		id : '#detail_panel',
+		container : '.right-content',
+		button : '.left-nav > #panel-trigger',
+		closed_size : 50,
+		isOpen : false,
+		open : function(){
+			var pan =  $(detail_panel.id);
+			var pan_right = $(detail_panel.container);
+			$(detail_panel.button).html('<span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span>');
+			pan.animate({width: '50%'});
+			pan_right.show();
+			this.isOpen = true;
+		},
+		close : function(){
+			var pan =  $(detail_panel.id);
+			var pan_right = $(detail_panel.container);
+			$(detail_panel.button).html('<span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span>');
+			pan.animate({width: detail_panel.closed_size+'px'});
+			pan_right.hide();
+			this.isOpen = false;
+		},
+		activate : function(){
+			if(detail_panel.isOpen)
+				detail_panel.close();
+			else
+				detail_panel.open();
+		}
+	 }
+	 var error_modal = {
+		id:'#error_modal',
+		container:'#error_modal_content',
+		toggle : function(message){
+			$(error_modal.container).html(message);
+			$(error_modal.id).modal({backdrop:false});
+			setInterval(function(){$(error_modal.id).modal('hide');},5000);
+		}
+	 }
+
+  </script>
+  <!--
+   --- Now let's use angular.js
+   --->
+  <script>
+	var mon = angular.module('mon', ['ngRoute','infinite-scroll','ngSanitize', 'chieffancypants.loadingBar', 'ngAnimate']).config(['$routeProvider',
+			function($routeProvider, $locationProvider) {
+				$routeProvider.when('/search/:searchString', {controller:'UrlCrtl', template: '' }).otherwise({redirectTo:'', controller:'UrlCrtl', template: '' });
+			}
+		]);
+	mon.service('datas',['$rootScope', '$http', function($rootScope, $http){
+		var flowList = [];
+		var searchValues = {};
+		var currentFlowId = '';
+		var nextFlowLoading = false;
+		var tab  = 'attribute' // can be also error or payload
+		var getFlow = function(flowId){
+				var i=0;
+				while (i<flowList.length && flowList[i].id != flowId) i+=1;
+				if( i !=  (flowList.length))
+					return flowList[i];
+				else
+					return null;
+		}
+		var genericSet = function(flowId, attribute, data){
+			var fl = getFlow(flowId);
+			fl[attribute] = fl[attribute] || [];
+			if (!angular.isArray(data)) data = [data];
+			 angular.forEach(data, function(value, key){
+			   if(!angular.isUndefined(value)){
+					var z = 0;
+					while(z < fl[attribute].length) {
+						if(!angular.isUndefined(fl[attribute][z])){ 
+							if(fl[attribute][z].id == value.id){
+								fl[attribute][z] = value;
+								break; // same id exist
+							}	
+						}else break;
+						z+=1;
+					}//while
+					if(z == fl[attribute].length) // didn't find the value in the table end of loop reach.
+						fl[attribute].push(value);
+				}//if
+			 });
+		}
+
+		
+		return {
+			addFlow : function(data){
+				if (angular.isArray(data)){
+					 //add each element to the table
+					 angular.forEach(data, function(value, key){
+					   flowList.push(value);
+					 }, this);
+				}else{
+					flowList.push(data);
+				}
+			},
+			getFlows : function(){
+				return flowList;
+			},
+			getFlow : getFlow,
+			getCurrentFlow : function(){
+				console.log("getCurrentFlow:" + this.currentFlowId);
+				return this.getFlow(this.currentFlowId);
+			},
+			setCurrentFlowId : function(id){
+				console.log("setCurrentFlowId to :" + id);
+				this.currentFlowId = id;
+				$rootScope.$broadcast('flowSelected');
+			},
+			setSearchValues : function(values){
+				console.log("setSearchValue");
+				this.searchValues = values;
+				$rootScope.$broadcast('searchValuesChange', values);
+			},
+			setActiveTab : function(tab){
+				console.log("setActiveTab to :" + tab);
+				this.tab = tab;
+			},
+			getActiveTab : function(){
+				return this.tab;
+			},
+			/**
+			* Here you should do a HTTP Request to get all flows
+			**/
+			loadFlows : function(){
+				console.log("loadFlows");
+				var self = this;
+				flowList = [];
+				nextFlowLoading = true; //avoid to get the next flow before first loading.
+				$http({url:'/search', method:'POST', params:this.searchValues}).success(function(content,status){
+					self.addFlow($.xml2json(content).flow);
+					nextFlowLoading = false;
+					$rootScope.$broadcast('flowsLoaded');
+				});
+				
+			},
+			/**
+			* Here you should do a HTTP Request to get all Errors lines
+			**/
+			loadErrors : function(flowId){
+				console.log("loadErrors");
+				//add in the description service name, operation name, 
+				$http.get('/flow/'+flowId+'/errors').success(function(content,status){
+					genericSet(flowId, 'errors', $.xml2json(content).error);
+				});		
+			},
+			/**
+			* Here you should do a HTTP Request to get all attributes lines
+			**/
+			loadAttributes : function(flowId){
+				console.log("loadAttributes");
+				$http.get('/flow/'+flowId+'/attributes').success(function(content,status){
+					console.log($.xml2json(content));
+					genericSet(flowId, 'attributes', $.xml2json(content).attribute);
+				});									
+			},
+			/**
+			* Here you should do a HTTP Request to get all operations lines
+			**/
+			loadOperations : function(flowId, serviceId){
+				console.log("loadOperations");
+				var fl = getFlow(flowId);
+				$http.get('/flow/'+flowId+'/service/'+serviceId+'/operations',{"toto":"toto"}).success(function(content,status){
+					var i = 0;
+					while (i<fl.services.length && fl.services[i].id != serviceId) i+=1;
+					fl.services[i].operations = (angular.isArray($.xml2json(content).operation) ? $.xml2json(content).operation :  [$.xml2json(content).operation]);			
+				});
+			},
+			/**
+			* Here you should do a HTTP Request to get all services lines
+			**/
+			loadServices : function(flowId){
+				console.log("loadServices");
+				$http.get('/flow/'+flowId+'/services').success(function(content,status){
+					genericSet(flowId, 'services', $.xml2json(content).service);
+				});
+			},
+			/**
+			* Here you should do a HTTP Request to get all services lines
+			**/
+			loadPayloads : function(flowId){
+				console.log("loadServices");		
+				$http.get('/flow/'+flowId+'/payloads').success(function(content,status){
+					/*var obj = $.xml2json(content);
+					for( i in obj.payload)
+						obj.payload[i].payload = decodeHTMLEntities(obj.payload[i].payload)*/
+					genericSet(flowId, 'payloads', $.xml2json(content).payload);
+				});
+			},
+			/**
+			* Here you should do a HTTP Request to load next results
+			**/
+			loadNextFlows : function(){
+				console.log('loadNextFlows');
+				if(!nextFlowLoading){
+					var self = this;
+					nextFlowLoading = true;
+					var values = angular.copy(this.searchValues);
+					var lastdate = flowList[flowList.length - 1].start_datetime;
+					values.start_date = lastdate;
+					$http({url:'/search', method:'POST', params:values}).success(function(content,status){
+						self.addFlow($.xml2json(content).flow);
+						$rootScope.$broadcast('flowsLoaded');
+						nextFlowLoading = false;
+					});
+				}
+			}
+		}//return
+	}]);
+	mon.controller('FlowListCtrl', function($scope, datas){
+		$scope.flows = {}
+		$scope.$on('flowsLoaded',function(evt, values){
+			console.log("FlowListCtrl on loadFlows");
+			$scope.flows = datas.getFlows();
+		});
+		$scope.openPanel = function(flowId, tab){datas.setActiveTab(tab); datas.setCurrentFlowId(flowId); /*keep the call order*/};
+		$scope.loadServices = datas.loadServices;
+		$scope.loadOperations = datas.loadOperations;
+		var xHasY = function(Y){
+			if(angular.isUndefined(Y))
+				return false;
+			else
+				if(angular.isArray(Y))
+					return Y.length > 0;
+				else
+					return false;
+		}
+		$scope.flowHasServices = function (flow){return xHasY(flow.services);};
+		$scope.serviceHasOperations = function(service){return xHasY(service.operations);}
+		$scope.loadNextFlows = function(){datas.loadNextFlows()};
+	});
+	/**
+	*Use to provide the good css to a status
+	**/
+	mon.filter("StatusToCSS", function(){
+		return function(status, error_criticity){
+			var value = "N/A";
+			//TODO -> Map all status correctly
+			if(status == "30") value='<span class="label label-success">&nbsp;Terminated&nbsp;</span>';
+			else if(status == "20") value='<span class="label label-info">In progress</span>';
+			else if(status == "10") value='<span class="label label-default">&nbsp;&nbsp;Started&nbsp;&nbsp;</span>';
+			else if(status == "40") value='<span class="label label-danger">In progress with error</span>';
+			else if(!angular.isUndefined(error_criticity)){
+					switch(error_criticity){
+						case "1" : value='<span class="label label-danger">&nbsp;&nbsp;&nbsp;CRITICAL&nbsp;&nbsp;&nbsp;</span>';break;
+						case "2" : value='<span class="label label-warning">&nbsp;&nbsp;&nbsp;MAJOR&nbsp;&nbsp;&nbsp;</span>';break;
+						case "3" : value='<span class="label label-warning">&nbsp;&nbsp;&nbsp;MINOR&nbsp;&nbsp;&nbsp;</span>';break;
+						default : value='<span class="label label-default">No error level</span>'
+					}
+			}
+			
+			return value;
+		}
+	});
+	/**
+	*Use to provide the duration in format hh:mm:ss.sss
+	**/
+	mon.filter("msToTime", function(){
+		return function(duration){
+			var value = "";
+			var mil = 0;
+			var sec = 0; //1000ms
+			var min = 0; //60 000 ms
+			var hou = 0; //360 000 ms
+			var rest = 0;
+			
+			if(duration >= 360000){
+				hou =  Math.floor(duration/360000); duration = duration%360000;
+			}
+			if(duration >= 60000){
+				min =  Math.floor(duration/60000); duration = duration%60000;
+			}
+			if(duration >= 1000){
+				sec =  Math.floor(duration/1000); duration = duration%1000;
+			}
+			mil = duration;
+			return new String("00" + hou).slice(-2) + ':' + new String("00" + min).slice(-2)  + ':' + new String("00" + sec).slice(-2)  +'.' + new String("000" + mil).slice(-3) ;
+		}
+	});
+	
+	/**
+	*Use to get the detail about a services
+	**/
+	mon.controller('FlowDetailCtrl',['$scope', '$http', 'datas', function($scope, $http, datas){
+		$scope.flow={};
+		$scope.previousFlowId = '';
+		$scope.previousTabs = '';
+		$scope.$on('flowSelected', function(){
+			$scope.flow = datas.getCurrentFlow();
+			$scope.tab = datas.getActiveTab();
+			console.log("FlowDetailCtrl will give following details :" + $scope.tab);
+			switch($scope.tab){
+				case 'error' : datas.loadErrors($scope.flow.id); break;
+				case 'attribute' : datas.loadAttributes($scope.flow.id); break;
+				case 'payload' : datas.loadPayloads($scope.flow.id);break;
+				default : console.warn("FlowDetailCtrl something wrong append for selecting tab :" + $scope.tab);
+			}
+			if($scope.flow.id != $scope.previousFlowId || $scope.tab != $scope.previousTabs){
+				detail_panel.open();
+				$scope.previousFlowId = $scope.flow.id;
+			}else{
+				if($scope.tab == $scope.previousTabs)
+					detail_panel.activate();
+			}
+			$scope.previousTabs = $scope.tab;
+		});
+		$scope.openPanel = function(tab){datas.setActiveTab(tab); datas.setCurrentFlowId($scope.flow.id);/*keep the call order*/};
+		$scope.isActiveTab = function(tab){return ($scope.tab == tab ? 'active' : '')};
+		$scope.flowHasErrors = function(){
+			if(angular.isUndefined($scope.flow.errors))
+				return false;
+			else
+				if(angular.isArray($scope.flow.errors))
+					return $scope.flow.errors.length > 0;
+				else
+					return false;
+		};
+	}])
+	mon.directive('custoPrism', function(){
+		return {
+			restrict : 'AEC',
+			link : function(scope, element, attrs){
+				try{
+					element.html(Prism.highlight(scope.payload.payload.replace(new RegExp('<', 'g'), '&lt;'), Prism.languages.markup));
+				}catch(e){
+					element.html(scope.payload.payload.replace(new RegExp('<', 'g'), '&lt;'));// For freaking IE
+				}
+			}
+		}
+	});
+	/**
+	* Called when the button search is pushed
+	**/
+	mon.controller('SearchFormCrtl', ['$scope','datas', '$location','$http', function($scope, datas, $location, $http){
+		console.log("SearchFormCrtl");
+		$scope.$on('searchValuesChange',function(evt, values){
+			console.log("SearchFormCrtl on searchValuesChange");
+			$scope.fields = values;
+			datas.loadFlows();
+		});
+		
+		$scope.search = function(fields){
+			/*Change the URL this will trigger the UrlCrtl but first we need to tokenize the fields
+			*/
+			console.log("SearchFormCrtl search");
+			var searchString ='';
+			for (name in fields){
+				if(angular.isString(fields[name]))
+					searchString+=name+'='+fields[name]+'|';
+			}
+			$location.path("/search/"+searchString);
+		}
+		//to fill the application with good value
+		$scope.criticity = [ {'name':"High" , 'value':'1'}, 
+				{'name':"Medium" , 'value':'2'}, 
+		{'name':"Low" , 'value':'3'}];
+		$scope.applications = [];
+		$scope.attribute_names = [];
+		$scope.transactions = [];
+		$scope.error_categories = [];
+		$scope.status = [ {'name':"Started" , 'value':'10'}, 
+		{'name':"In Progress" , 'value':'20'}, 
+		{'name':"Terminated" , 'value':'30'}, 
+		{'name':"In Error" , 'value':'40'},
+		{'name':"Terminated KO", 'value':'50'}];
+		$http.get('/serviceDetails').success(function(content,status){
+			console.log("SearchFormCrtl serviceDetails");
+			$scope.applications = $.xml2json(content).application;
+			$scope.attribute_names = $.xml2json(content).attribute;
+			$scope.error_categories = $.xml2json(content).error_category;
+			for(a in $scope.applications) for(b in $scope.applications[a].transaction)$scope.transactions.push($scope.applications[a].transaction	[b]);
+		});
+	}]);
+
+	mon.controller('UrlCrtl', ['$scope','datas', '$routeParams', function($scope, datas, $routeParams){
+		console.log('UrlCrtl');
+		$scope.fields = {};
+		if(!angular.isUndefined($routeParams.searchString)){ // automatically fill the form
+			var arrayOfParamValue = $routeParams.searchString.split("|");
+			console.log('arrayOfParamValue');console.log(arrayOfParamValue);
+			if(arrayOfParamValue.length > 1){
+				for ( el in arrayOfParamValue){
+					 var split = arrayOfParamValue[el].split("=");
+					 var fieldsplit = split[0].split(".");
+					 if(fieldsplit.length > 1){
+						$scope.fields[fieldsplit[0]] = $scope.fields[fieldsplit[0]] || {};
+						$scope.fields[fieldsplit[0]][fieldsplit[1]] = split[1];
+					 }else{
+						$scope.fields[split[0]] = split[1];
+					 }
+				};
+			}
+			console.log("$scope.fields");
+			console.log($scope.fields);
+		}
+		datas.setSearchValues($scope.fields);
+	}]);
+	
+
+  </script>
+  
+  </head>
+  <body style="background-color:#eee;">
+	<!---->
+	<div class="modal fade" id="error_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+			<div class="alert alert-danger alert-dismissable">
+				  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				  <strong>Ooops!</strong> <span id="error_modal_content"> Error append !</span>
+			</div>
+		</div>
+	</div>
+	<div id="search_panel" ng-controller="SearchFormCrtl" class="container " style="padding:0px; margin-bottom:10px; background-color:#fff; box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); ">
+		<div class="col-sm-12" style="background: -webkit-linear-gradient(top, #014c8f, #014c77); background-color: #014c8f; color:#fff; background-repeat: repeat-x; height:36px; padding-top:5px">
+			<h4 class="pull-left" style="margin:0px; padding:0px; display:inline"><a href="#" style="color:#fff;">Rexel Tibco Monitoring Tool</a></h4> 
+		</div>
+		<form class="col-sm-12">
+		  <div ng-view></div ng-view>
+		  <div class="row"> <!-- First row -->
+			<div class="form-group col-sm-2">
+				<label for="start-date">Start date</label>
+				<input type="text" class="form-control" ng-model="fields.from" id="start_date" placeholder="2012-01-31 15:08">
+			</div>
+		    <div class="form-group col-sm-2">
+			    <label for="end-date">End date</label>
+			    <input type="text" class="form-control" ng-model="fields.to" id="end_date" placeholder="2013-01-31 09:08">
+			</div>
+			<div class="form-group col-sm-2">
+			    <label for="application">Application</label>
+			    <select class="form-control" ng-model="fields.application" ng-options="c.name as c.name for c in applications">
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+			    <label for="transaction">Transaction</label>
+			    <select class="form-control" ng-model="fields.transaction" ng-options="c.name as c.name for c in transactions">
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+			    <label for="status">Status</label>
+			    <select class="form-control" ng-model="fields.status" ng-options="c.value as c.name for c in status">
+				</select>
+			</div>
+		  </div>
+		  <div class="row"> <!-- second row -->
+			<div class="form-group col-sm-2">
+			    <label for="e-category">Error Category</label>
+			    <select class="form-control" ng-model="fields.error_category" ng-options="c.name as c.name for c in error_categories">
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+			    <label for="e-level">Error Level</label>
+			    <select class="form-control" ng-model="fields.error_level" ng-options="c.value as c.name for c in criticity">
+				</select>
+			</div>
+			<div class="form-group col-sm-4">
+			    <label for="a-name">Attributes</label>
+				 <div class="input-group" style="width:100%">
+				  <select class="form-control" ng-model="fields.attribute_name" style="width:50%" ng-options="c.name as c.name for c in attribute_names">
+
+				  </select>
+				  <input type="text" class="form-control" ng-model="fields.attribute_value" placeholder="Value" style="width:50%">
+				</div>
+			</div>
+			<div class="form-group col-sm-2">
+			    <label for="search">&nbsp;</label>
+				<button type="button" class="btn btn-primary form-control" ng-click="search(fields)"> <span class="glyphicon glyphicon-search"></span> Search</button>
+			</div>
+		  </div>
+		</form>	
+	</div>
+
+	<div id="result_panel" ng-controller="FlowListCtrl" class="container" style="padding:0px;">
+		<div class="container result-header" style="box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3);">
+			<div class="col-sm-1 result-header-col">
+				Action
+			</div>
+			<div class="col-sm-3 result-header-col">
+				Start time
+			</div>
+			<div class="col-sm-1 result-header-col">
+				Duration
+			</div>
+			<div class="col-sm-1 result-header-col">
+				Application
+			</div>
+			<div class="col-sm-3 result-header-col">
+				Transaction
+			</div>
+			<div class="col-sm-1 result-header-col">
+				Status
+			</div>
+			<div class="col-sm-2 result-header-col">
+				Error Category
+			</div>
+		</div>
+		<div class="container result-lines" infinite-scroll="loadNextFlows()" infinite-scroll-distance=5>
+			<!-- for each flow -->
+			<div class="container result-line" ng-repeat="flow in flows">
+				<div class="container-fluid result-line" style="box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); padding:0px;" ng-init="flow.hide=true" ng-Dblclick="flow.hide=!flow.hide; loadServices(flow.id);">
+					<div class="col-sm-1 result-line-col">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-xs" ng-click="openPanel(flow.id, 'attribute')"> <span class="glyphicon glyphicon glyphicon-list-alt"></span> </button>
+							<button type="button" class="btn btn-default btn-xs" ng-click="openPanel(flow.id, 'error')"> <span class="glyphicon glyphicon-warning-sign"></span> </button>
+							<button type="button" class="btn btn-default btn-xs" ng-click="openPanel(flow.id, 'payload')"> <span class="glyphicon  glyphicon glyphicon-envelope"></span> </button>
+						</div>
+					</div>
+					<div class="col-sm-3 result-line-col text-left">{{flow.start_datetime}}</div>
+					<div class="col-sm-1 result-line-col">{{flow.duration | msToTime}}</div>
+					<div class="col-sm-1 result-line-col">{{flow.application}}</div>
+					<div class="col-sm-3 result-line-col text-left">{{flow.transaction}}</div>
+					<div class="col-sm-1 result-line-col" ng-bind-html="flow.status | StatusToCSS:flow.error_criticity"></div>
+					<div class="col-sm-2 result-line-col" style="height:30px; overflow:hidden"><a ng-href="#/search/error_category={{flow.error_category}}|">{{flow.error_category}}</a></div>
+				</div>
+				<!-- if flowHasServices -->
+				<div class="col-sm-12 container-fluid row" ng-if="flowHasServices(flow)" ng-hide="flow.hide" style="margin-left:0px; border-left: 1px solid #ccc; border-right: 1px solid #ccc; padding-bottom:2px;">
+					<div class="container-fluid result-header" style="padding:0px; box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3);">
+						<div class="col-sm-3 result-header-col" style="padding-top:2px; padding-bottom:2px;">Start Time</div>
+						<div class="col-sm-3 result-header-col" style="padding-top:2px; padding-bottom:2px;">Duration</div>
+						<div class="col-sm-1 result-header-col" style="padding-top:2px; padding-bottom:2px;">From</div>
+						<div class="col-sm-1 result-header-col" style="padding-top:2px; padding-bottom:2px;">To</div>
+						<div class="col-sm-2 result-header-col" style="padding-top:2px; padding-bottom:2px;">Status</div>
+						<div class="col-sm-2 result-header-col" style="padding-top:2px; padding-bottom:2px;">Error category</div>
+					</div>
+					<!-- for each services -->
+					<div class="container-fluid result-line" ng-repeat="service in flow.services" style="padding:0px;" >
+						<div class="container-fluid result-line" style="box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); padding:0px;" ng-init="service.hide=true" ng-Dblclick="service.hide=!service.hide; loadOperations(flow.id, service.id)" >
+							<div class="col-sm-3 result-line-col">{{service.start_datetime}}</div>
+							<div class="col-sm-3 result-line-col">{{service.duration | msToTime}}</div>
+							<div class="col-sm-1 result-line-col">{{service.from}}</div>
+							<div class="col-sm-1 result-line-col">{{service.to}}</div>
+							<div class="col-sm-2 result-line-col" ng-bind-html="service.status | StatusToCSS:service.error_criticity"></div>
+							<div class="col-sm-2 result-line-col" style="height:30px; overflow:hidden"><a ng-href="#/search/error_category={{service.error_category}}|">{{service.error_category}}</a></div>
+						</div>
+						<!-- If serviceHasOperation -->
+						<div class="col-sm-12 container-fluid row" ng-if="serviceHasOperations(service)" ng-hide="service.hide" style="margin-left:0px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+							<div class="container-fluid result-header" style="box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); padding:0px;">
+								<div class="col-sm-3 result-header-col" style="padding-top:2px; padding-bottom:2px;">Start Time</div>
+								<div class="col-sm-1 result-header-col" style="padding-top:2px; padding-bottom:2px;">Duration</div>
+								<div class="col-sm-5 result-header-col" style="padding-top:2px; padding-bottom:2px;">Name</div>
+								<div class="col-sm-1 result-header-col" style="padding-top:2px; padding-bottom:2px;">Status</div>
+								<div class="col-sm-2 result-header-col" style="padding-top:2px; padding-bottom:2px;">Error category</div>
+							</div><!-- /result header -->
+							<div class="container-fluid result-line" ng-repeat="operation in service.operations" style="padding:0px">
+								<div class="container-fluid" style="box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); padding:0px;">
+									<div class="col-sm-3 result-line-col">{{operation.start_datetime}}</div>
+									<div class="col-sm-1 result-line-col">{{operation.duration | msToTime}}</div>
+									<div class="col-sm-5 result-line-col" style="overflow:hidden"><span style="position: absolute; right: 0">{{operation.name}}</span></div>
+									<div class="col-sm-1 result-line-col" ng-bind-html="operation.status | StatusToCSS:operation.error_criticity"></div>
+									<div class="col-sm-2 result-line-col">{{operation.error_category}}</div>
+								</div>
+							</div><!-- /for each operations --> 
+						</div><!-- /if serviceHasOperation -->
+					</div><!-- /for each services -->
+				</div>
+			</div>
+		</div>
+	</div>
+ 	
+	<div id="detail_panel" ng-controller="FlowDetailCtrl" >
+		<div class="left-nav">
+			<button id="panel-trigger" class="btn btn-default btn-block" title="Close Pane" onClick="detail_panel.activate();"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></button>
+
+			<ul class="nav nav-tabs tabs-left">
+			  <li class="ng-class:isActiveTab('attribute')"><a href="#" data-toggle="tab" ng-click="openPanel('attribute')"><span class="glyphicon glyphicon glyphicon-list-alt"></span></a></li>
+			  <li class="ng-class:isActiveTab('error')"><a href="#" data-toggle="tab" ng-click="openPanel('error');"><span class="glyphicon glyphicon-warning-sign"></span></a></li>
+			  <li class="ng-class:isActiveTab('payload')"><a href="#" data-toggle="tab" ng-click="openPanel('payload');"><span class="glyphicon  glyphicon glyphicon-envelope"></span></a></li>
+			</ul>
+		</div>
+		<div class="right-content tab-content">
+
+			<div  class="tab-pane ng-class:isActiveTab('attribute');">
+				<div id="flow_detail_id" class="flow-panel">
+					<div class="flow-panel-header">
+						<strong>Flow detail: </strong> {{flow.application}} / {{flow.transaction}} @ {{flow.start_datetime}} 
+					</div>
+					<div class="flow-panel-content">
+						Duration : {{flow.duration}} <br/>
+						Technical ID : {{flow.id}} <br/>
+					</div>
+				</div>
+				<div class="flow-panel">
+					<div class="flow-panel-header">
+						<strong> Attributes</strong>
+					</div>
+					<div class="flow-panel-content row">
+						<span ng-repeat="attribute in flow.attributes" class="col-sm-6"><strong>{{attribute.name}}: </strong> <a ng-href="#/search/attribute_name={{attribute.name}}|attribute_value={{attribute.value}}"> {{attribute.value}} </a></span>
+					</div>
+				</div>
+			</div>
+			<div class="flow-panel tab-pane ng-class:isActiveTab('error');" >
+				<div class="flow-panel-header">
+					<strong>Errors</strong>
+				</div>
+				<div class="flow-panel-errors" ng-if="flowHasErrors()">
+					<div class="flow-panel-error" ng-repeat="error in flow.errors">
+						<div class="flow-panel-error-header">
+						{{error.process_name}} @ {{error.datetime}}
+						<span class="pull-right" ng-bind-html="'50' | StatusToCSS:error.criticity"></span>
+						</div>
+						<div class="flow-panel-error-content" style="">
+							<strong>Category:</strong> {{error.category}} <br/>
+							{{error.stacktrace}}
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="flow-panel tab-pane ng-class:isActiveTab('payload');" >
+				<div class="flow-panel-header">
+					<strong>Payload</strong>
+				</div>
+				<div class="flow-panel-content row" >
+						<div ng-repeat="payload in flow.payloads" class="col-sm-12">
+							<strong>{{payload.process_name}}</strong><br/>
+							<div><pre class="language-markup" ><code class="language-markup" custo-prism></code></pre></div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	$('#start_date').datetimepicker({lang:'en', format:'Y-m-d H:i:s', 
+		onChangeDateTime:function(dp,$input){
+			$input.trigger("change"); // for angular
+		}
+	});
+	$('#end_date').datetimepicker({lang:'en', format:'Y-m-d H:i:s',
+		onChangeDateTime:function(dp,$input){
+			$input.trigger("change"); // for angular
+		}
+	});
+	</script>
+		<script src="static/prism.js"></script>
+  </body>
+
+</html>

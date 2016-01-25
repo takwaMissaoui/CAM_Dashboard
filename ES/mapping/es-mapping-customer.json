@@ -1,0 +1,27 @@
+{
+"customer":{
+	"properties":{
+		"BillingAddress":{
+			"properties":{
+				"city":{"type":"string"},
+				"country":{"type":"string"},
+				"line1":{"type":"string"},
+				"line2":{"type":"string"},
+				"zipCode":{"type":"string"}
+				}
+			},
+		"DeliveryAddresses":{
+			"properties":{
+				"city":{"type":"string"},
+				"country":{"type":"string"},
+				"line1":{"type":"string"},
+				"line2":{"type":"string"},
+				"line3":{"type":"string"},
+				"zipCode":{"type":"string"}
+				}
+			},
+			"companyName":{"type":"string", index:"not_analyzed"},
+			"id":{"type":"string"}
+			}
+		}
+	}

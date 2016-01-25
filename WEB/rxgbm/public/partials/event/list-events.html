@@ -1,0 +1,21 @@
+
+<div class="panel rx-main-panel">
+	<div class="panel-heading">Timeline of order : {{orderId}}</div>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>date</th>
+				<th>event</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat='event in events' popover="{{event.message || 'No change'}}" popover-trigger="mouseenter" popover-placement="top" popover-title="{{event.flowId}}">
+				<td title="{{event.ts | date : 'yy-MM-dd HH:mm'}}"> {{event.ts | rxgbmTimeAgo}}</td>
+				<td> {{event.type}} </td>
+			<!--	<td>  </td> -->
+			</tr>
+		</tbody>
+	</table>
+
+</div> <!--panel -->

@@ -1,0 +1,8 @@
+{
+	"semaphore":{
+		"properties":{
+			"date":{"type":"date","format":"dateOptionalTime"},
+			"flowId":{"type":"string"}
+		}
+	}
+}
